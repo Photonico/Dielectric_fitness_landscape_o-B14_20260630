@@ -274,3 +274,277 @@ $$
 最终可以概括为:
 
 > 局域规则生成状态空间的连接结构, 景观赋予状态以评价, 动力学在局域连接上演化, 重整化把微观景观压缩成有效景观.
+
+## 7. BB 对 FL 的限制: 不是所有景观都能被压缩
+
+BB 函数给 FL 一个重要的反面约束.
+
+如果存在一种通用方法, 可以对任意局域规则产生的景观做有效粗粒化, 并直接判断其长期命运, 那么原则上就可能解决停机问题, 进而计算 BB 函数.
+
+但停机问题不可判定, BB 函数不可计算. 因此:
+
+$$
+\boxed{
+\text{不存在适用于所有景观的通用压缩, 通用预测, 通用重整化方法}
+}
+$$
+
+这不是削弱 FL, 而是让 FL 更成熟. FL 不是万能答案, 而是组织问题的语言. 它告诉我们应该问:
+
+- 状态是什么.
+- 邻域是什么.
+- fitness 是什么.
+- 动力学是什么.
+- 是否存在有效变量.
+- 是否可以粗粒化.
+- 是否存在不可压缩区域.
+
+所以 BB 的价值在于提醒:
+
+```text
+有景观
+≠
+景观简单
+≠
+可以全局预测
+≠
+可以统一重整化
+```
+
+这使 FL 从 toy model 升级为严肃框架, 因为它主动纳入了预测极限.
+
+## 8. AI 与 FL 的关系
+
+AI 与这套框架关系很深. AI 不是 FL 的外部应用, 而是几乎处在这个框架的中心.
+
+### 8.1 神经网络训练本身就是景观动力学
+
+神经网络参数可以写成:
+
+$$
+\theta=(w_1,w_2,\cdots,w_N)
+$$
+
+损失函数为:
+
+$$
+\mathcal{L}(\theta)
+$$
+
+于是神经网络天然定义了一个 loss landscape:
+
+$$
+(\text{parameter space},\mathcal{L})
+$$
+
+训练过程是在景观上的局域运动:
+
+$$
+\theta_{t+1}
+=
+\theta_t
+-
+\eta\nabla\mathcal{L}(\theta_t)
+$$
+
+也就是:
+
+$$
+\boxed{
+\text{局域梯度更新}
+\to
+\text{全局能力涌现}
+}
+$$
+
+这和 FL 的基本思想同构.
+
+### 8.2 深度网络像一种数据驱动的粗粒化
+
+深度网络逐层把原始输入映射成更抽象的表示:
+
+```text
+pixels / tokens / atomic structures
+  ↓
+local features
+  ↓
+motifs
+  ↓
+concepts / descriptors
+  ↓
+predictions / actions
+```
+
+这类似于重整化:
+
+$$
+\text{micro variables}
+\to
+\text{effective variables}
+$$
+
+不过这不是严格的 Wilson RG. 物理 RG 有明确尺度, 对称性, 固定点, 和流方程. 神经网络中的 RG 类比更接近一种数据驱动, 任务驱动的表示压缩.
+
+更准确的说法是:
+
+$$
+\boxed{
+\text{深度学习是在数据分布上学习一种有效粗粒化}
+}
+$$
+
+### 8.3 Transformer 把局域性推广到信息依赖
+
+CNN 的局域性来自空间近邻关系. Transformer 的 attention 看起来是非局域的, 因为任意 token 都可以 attend 到任意 token.
+
+但从广义局域性看, attention 并不是简单破坏局域性. 它把邻域从物理坐标改写为信息相关性:
+
+$$
+\text{spatial neighborhood}
+\to
+\text{semantic neighborhood / dependency neighborhood}
+$$
+
+因此 Transformer 展示了:
+
+$$
+\boxed{
+\text{局域性可以由坐标距离推广为依赖关系距离}
+}
+$$
+
+这与广义局域化原理一致.
+
+### 8.4 AI 是景观建模器, 搜索器, 和压缩器
+
+AI 与景观有两层关系.
+
+第一层, AI 自己在景观上训练:
+
+$$
+\theta \in \text{model landscape}
+$$
+
+第二层, AI 可以学习外部世界的景观:
+
+$$
+x \in \text{world landscape}
+$$
+
+例如在材料设计中:
+
+$$
+\text{structure}
+\to
+E, E_g, \epsilon(\omega), T_c, \text{stability}
+$$
+
+AI 可以学习 surrogate model:
+
+$$
+\hat F_{\mathrm{AI}}(\text{structure})
+\approx
+F_{\mathrm{DFT}}(\text{structure})
+$$
+
+然后在这个近似景观上搜索高 fitness 区域.
+
+因此 AI 在 FL 中可以扮演三种角色:
+
+```text
+预测器: structure → property
+景观建模器: samples → surrogate landscape
+搜索策略: landscape → candidate structures
+```
+
+### 8.5 BB 给 AI 的边界
+
+如果一个 AI 能对任意局域规则都找到有效粗粒化, 并直接预测最终结果, 那么它原则上就能解决停机问题.
+
+这不可能.
+
+因此:
+
+$$
+\boxed{
+\text{不存在能压缩一切计算过程的通用 AI}
+}
+$$
+
+AI 的强大不在于打破 BB 限制, 而在于真实世界通常不是任意程序空间. 真实世界存在大量可压缩结构:
+
+- 对称性.
+- 局域性.
+- 重复 motif.
+- 低维有效变量.
+- 统计规律.
+- 可迁移模式.
+- 物理约束.
+
+因此:
+
+$$
+\boxed{
+\text{AI 的本质能力是在有结构的世界中寻找可压缩景观}
+}
+$$
+
+## 9. Interpretability 与 Alignment 的景观解释
+
+### 9.1 Interpretability 是寻找有效自由度
+
+神经网络内部有海量参数. Interpretability 试图找到更高层的有效结构, 例如:
+
+- features.
+- circuits.
+- modules.
+- representations.
+- latent variables.
+
+这类似于从微观自由度中提取宏观有效变量:
+
+$$
+\text{parameters}
+\to
+\text{effective mechanisms}
+$$
+
+因此 interpretability 可以理解成一种广义重整化任务:
+
+$$
+\boxed{
+\text{从神经网络的微观参数景观中提取人类可理解的有效变量}
+}
+$$
+
+### 9.2 Alignment 是两个景观之间的匹配问题
+
+训练时优化的是 loss landscape:
+
+$$
+\mathcal{L}(\theta)
+$$
+
+我们真正关心的是 value landscape:
+
+$$
+V(\text{behavior})
+$$
+
+问题在于:
+
+$$
+\text{local loss decrease}
+\not\Rightarrow
+\text{global alignment with human intent}
+$$
+
+所以 alignment 可以理解为:
+
+$$
+\boxed{
+\text{如何让训练景观的局部优化方向, 对应人类价值景观中的好区域}
+}
+$$
+
+这也是 FL 语言的一个优点. 它能把 AI alignment 从抽象问题, 部分转化为景观, 目标函数, 动力学, 盆地, 和泛化的问题.
